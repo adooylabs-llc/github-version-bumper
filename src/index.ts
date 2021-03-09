@@ -2,11 +2,12 @@ import { bumpVersion } from './helpers/bumper'
 import { Toolkit } from 'actions-toolkit'
 
 Toolkit.run(async (tools) => {
+  const tagprefix = process.env.TAG_PREFIX || 'v'
   const fileName = process.env.VERSION_FILE_NAME || 'package.json'
   const entry = process.env.VERSION_ENTRY || 'version'
-  const githubUser = process.env.GITHUB_USER || 'GitHub Version Bumper'
+  const githubUser = process.env.GITHUB_USER || 'Inkblot Version Bumper'
   const githubEmail =
-    process.env.GITHUB_EMAIL || 'github-version-bumper@users.noreply.github.com'
+    process.env.GITHUB_EMAIL || 'dev@inkblottherapy.com'
 
   const commitMessage = 'version bumped to v'
 
@@ -38,20 +39,20 @@ Toolkit.run(async (tools) => {
     // Bumping Starts
 
     if (lastCommit.includes('[ci-bump version=')) {
-      const splitted = lastCommit.split('[ci-bump version=\\"')
+      const splitted = lastCommit.split('[version=\\"')
       const replace = splitted[1].split('\\"')[0]
       console.log('replace:', replace)
       await bumpVersion(fileName, { replace, entry })
-    } else if (lastCommit.includes('[ci-bump pre=')) {
+    } else if (lastCommit.includes('[pre=')) {
       console.log('pre')
       const splitted = lastCommit.split('[ci-bump pre=\\"')
       const pre = splitted[1].split('\\"')[0]
       console.log('pre:', pre)
       await bumpVersion(fileName, { pre, entry })
-    } else if (lastCommit.includes('[ci-bump major]')) {
+    } else if (lastCommit.includes('[major]') || lastCommit.includes('[release]')) {
       console.log('major')
       await bumpVersion(fileName, { major: true, entry })
-    } else if (lastCommit.includes('[ci-bump minor]')) {
+    } else if (lastCommit.includes('[minor]') || lastCommit.includes('[feature]')) {
       console.log('minor')
       await bumpVersion(fileName, { minor: true, entry })
     } else {
@@ -65,12 +66,12 @@ Toolkit.run(async (tools) => {
       'commit',
       '-a',
       '-m',
-      `ci: ${commitMessage} ${newVersion}`,
+      `ci: ${commitMessage${newVersion}`,
     ])
 
     // PUSH THE CHANGES
     const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}.git`
-    await tools.runInWorkspace('git', ['tag', `v${newVersion}`])
+    await tools.runInWorkspace('git', ['tag', `${tagprefix}${newVersion}`])
     await tools.runInWorkspace('git', ['push', remoteRepo, '--follow-tags'])
     await tools.runInWorkspace('git', ['push', remoteRepo, '--tags'])
   } catch (e) {
