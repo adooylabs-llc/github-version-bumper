@@ -66,7 +66,7 @@ Toolkit.run(async (tools) => {
       'commit',
       '-a',
       '-m',
-      `ci: ${commitMessage${newVersion}`,
+      `ci: ${commitMessage}${newVersion}`,
     ])
 
     // PUSH THE CHANGES
