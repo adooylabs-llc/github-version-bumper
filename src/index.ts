@@ -5,9 +5,9 @@ Toolkit.run(async (tools) => {
   const tagprefix = process.env.TAG_PREFIX || 'v'
   const fileName = process.env.VERSION_FILE_NAME || 'package.json'
   const entry = process.env.VERSION_ENTRY || 'version'
-  const githubUser = process.env.GITHUB_USER || 'Inkblot Version Bumper'
+  const githubUser = process.env.GITHUB_USER || 'Adooylabs Version Bumper'
   const githubEmail =
-    process.env.GITHUB_EMAIL || 'dev@inkblottherapy.com'
+    process.env.GITHUB_EMAIL || 'amvelasco@gmail.com'
 
   const commitMessage = 'version bumped to v'
 
